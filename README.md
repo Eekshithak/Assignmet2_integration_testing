@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Aware-Microservices 
 ## Project Overview
 
@@ -167,3 +168,6 @@ The project requires certain environment variables to be set for proper configur
 ## Conclusion
 
 The Aware-Microservices project showcases the implementation of a microservices architecture using modern technologies. By following the instructions provided, you can set up and run the project on your local machine, gaining insights into the workings of a microservices-based system.
+=======
+# Assignmet2_integration_testing
+>>>>>>> 5afdff65406c11035abd2b8f7cbef1fce8a8bee2

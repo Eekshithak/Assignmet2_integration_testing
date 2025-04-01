@@ -144,4 +144,44 @@ def test_event_driven_user_update_propagation():
     assert updated_order.get("userEmails") == updated_data["emails"], "Order emails not updated"
     assert updated_order.get("deliveryAddress") == updated_data["deliveryAddress"], "Order address not updated"
 
+    # -----------------------------------------------------------------------------
+# Test Case 4: Validate API Gateway Routing (Strangler Pattern)
+# -----------------------------------------------------------------------------
+def test_api_gateway_routing():
+    """
+    Objective: Ensure the API Gateway routes requests between User Service v1 and v2
+    according to the configured traffic split (strangler pattern).
+    Steps:
+    1. Send multiple POST requests to /users/ via the API Gateway.
+    2. Verify that each request returns HTTP 201.
+    3. Optionally, if responses include version information, check that responses come from both v1 and v2.
+    
+    Note: If your service does not return a version indicator, this test will simply validate that the gateway routes successfully.
+    """
+    versions = []
+    for _ in range(10):
+        user_data = {
+            "firstName": "Routing",
+            "lastName": "Tester",
+            "emails": [f"routing_{uuid.uuid4().hex[:6]}@example.com"],
+            "deliveryAddress": {
+                "street": "321 Route Rd",
+                "city": "RouteCity",
+                "state": "RC",
+                "postalCode": "22222",
+                "country": "Routeland"
+            }
+        }
+        response = requests.post(f"{GATEWAY_URL}/users/", json=user_data)
+        assert response.status_code == 201, f"Expected 201, got {response.status_code}"
+        data = response.json()
+        # If your response includes a version field (e.g., "version": "v1" or "v2"), capture it.
+        version = data.get("version", "unknown")
+        versions.append(version)
+    
+    
+    if "unknown" not in versions:
+        assert len(set(versions)) > 1, "API Gateway did not route to both versions"
+
+
 
